@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	news "worklen/proto/news"
+	news "worklen/proto"
 
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net"
 
-	news "worklen/proto/news"
+	news "worklen/proto"
 
 	"worklen/configreader"
 	"worklen/news_api"
