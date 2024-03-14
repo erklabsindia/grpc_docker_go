@@ -9,7 +9,7 @@ help:
 .PHONY: proto
 ## proto: compiles .proto files
 proto:
-	@ docker run -v $(PWD):/defs namely/protoc-all -f proto/poetry.proto -l go -o . --go-source-relative
+	@ docker run -v $(PWD):/defs namely/protoc-all -f proto/news.proto -l go -o . --go-source-relative
 
 .PHONY: build
 ## build: builds server's binary

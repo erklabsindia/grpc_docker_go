@@ -1,7 +1,3 @@
-// Copyright (c) 2022 Tiago Melo. All rights reserved.
-// Use of this source code is governed by the MIT License that can be found in
-// the LICENSE file.
-
 package server
 
 import (
@@ -10,18 +6,17 @@ import (
 	"fmt"
 	"net"
 
-	"bitbucket.org/tiagoharris/docker-grpc-service-tutorial/configreader"
-	"bitbucket.org/tiagoharris/docker-grpc-service-tutorial/poetrydb"
-	poetry "bitbucket.org/tiagoharris/docker-grpc-service-tutorial/proto"
+	news "worklen/proto/news"
+
+	"worklen/configreader"
+	"worklen/news_api"
+
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-// These global variables makes it easy
-// to mock these dependencies
-// in unit tests.
 var (
 	netListen           = net.Listen
 	configreaderReadEnv = configreader.ReadEnv
@@ -29,21 +24,16 @@ var (
 	protojsonUnmarshal  = protojson.Unmarshal
 )
 
-// Server defines the available operations for gRPC server.
 type Server interface {
-	// Serve is called for serving requests.
 	Serve() error
-	// GracefulStop is called for stopping the server.
 	GracefulStop()
-	// RandomPoetries returns a random list of poetries.
-	RandomPoetries(ctx context.Context, in *poetry.RandomPoetriesRequest) (*poetry.PoetryList, error)
+	GetNewsArticles(ctx context.Context, in *news.GetNewsRequest) (*news.NewsList, error)
 }
 
-// server implements Server.
 type server struct {
 	listener   net.Listener
 	grpcServer *grpc.Server
-	poetryDb   poetrydb.PoetryDb
+	newsApi    news_api.NewsAPI
 }
 
 func (s *server) Serve() error {
@@ -66,26 +56,26 @@ func NewServer(port int) (Server, error) {
 	if err != nil {
 		return server, errors.Wrap(err, "reading env vars")
 	}
-	server.poetryDb = poetrydb.NewPoetryDb(config.PoetrydbBaseUrl, config.PoetrydbHttpTimeout)
+	server.newsApi = news_api.NewNewsAPI(config.NewsBaseUrl, config.NewsApiKey, config.NewsHttpTimeout)
 	server.grpcServer = grpc.NewServer()
-	poetry.RegisterProtobufServiceServer(server.grpcServer, server)
+	news.RegisterProtobufServiceServer(server.grpcServer, server)
 	reflection.Register(server.grpcServer)
 	return server, nil
 }
 
-func (s *server) RandomPoetries(ctx context.Context, in *poetry.RandomPoetriesRequest) (*poetry.PoetryList, error) {
-	pbPoetryList := new(poetry.PoetryList)
-	poetryList, err := s.poetryDb.Random(int(in.NumberOfPoetries))
+func (s *server) GetNewsArticles(ctx context.Context, in *news.GetNewsRequest) (*news.NewsList, error) {
+	pbArticleList := new(news.NewsList)
+	articles, err := s.newsApi.GetNews(string(in.Query), int(in.PageSize))
 	if err != nil {
-		return pbPoetryList, errors.Wrap(err, "requesting random poetry")
+		return pbArticleList, errors.Wrap(err, "requesting articles")
 	}
-	json, err := jsonMarshal(poetryList)
+	json, err := jsonMarshal(articles)
 	if err != nil {
-		return pbPoetryList, errors.Wrap(err, "marshalling json")
+		return pbArticleList, errors.Wrap(err, "marshalling json")
 	}
-	err = protojsonUnmarshal(json, pbPoetryList)
+	err = protojsonUnmarshal(json, pbArticleList)
 	if err != nil {
-		return pbPoetryList, errors.Wrap(err, "unmarshalling proto")
+		return pbArticleList, errors.Wrap(err, "unmarshalling proto")
 	}
-	return pbPoetryList, nil
+	return pbArticleList, nil
 }

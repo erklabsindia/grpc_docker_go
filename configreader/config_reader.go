@@ -32,10 +32,12 @@ type EnvConfig interface {
 	Process(prefix string, spec interface{}) error
 }
 
+// pageSize=20&q=bitcoin&apiKey=
 // Config holds configuration data.
 type Config struct {
-	PoetrydbBaseUrl     string `envconfig:"POETRYDB_BASE_URL" required:"true"`
-	PoetrydbHttpTimeout int    `envconfig:"POETRYDB_HTTP_TIMEOUT" required:"true"`
+	NewsBaseUrl     string `envconfig:"NEWS_BASE_URL" required:"true"`
+	NewsApiKey      string `envconfig:"NEWS_API_KEY" required:"true"`
+	NewsHttpTimeout int    `envconfig:"NEWS_HTTP_TIMEOUT" required:"true"`
 }
 
 // ReadEnv reads envionment variables into Config struct.

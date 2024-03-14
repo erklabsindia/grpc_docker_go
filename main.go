@@ -10,7 +10,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"bitbucket.org/tiagoharris/docker-grpc-service-tutorial/server"
+	"worklen/server"
+
 	"github.com/pkg/errors"
 )
 

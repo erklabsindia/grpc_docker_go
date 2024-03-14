@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	news "worklen/proto/news"
 
-	poetry "bitbucket.org/tiagoharris/docker-grpc-service-tutorial/proto"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -29,18 +29,14 @@ func run(ctx context.Context, log *log.Logger) error {
 	if err != nil {
 		errors.Wrap(err, "dialing")
 	}
-	client := poetry.NewProtobufServiceClient(conn)
-	res, err := client.RandomPoetries(ctx, &poetry.RandomPoetriesRequest{NumberOfPoetries: int32(2)})
+	client := news.NewProtobufServiceClient(conn)
+	res, err := client.GetNewsArticles(ctx, &news.GetNewsRequest{Query: string("bitcoin"), PageSize: int32(2)})
 	if err != nil {
-		return errors.Wrap(err, "calling 'client.RandomPoetries()'")
+		return errors.Wrap(err, "calling 'client.GetNewsRequest()'")
 	}
-	for _, poetry := range res.List {
-		fmt.Println("\nTitle: ", poetry.Title)
-		fmt.Println("Author: ", poetry.Author)
-		fmt.Print("\n")
-		for _, line := range poetry.Lines {
-			fmt.Printf("\t%s\n", line)
-		}
+	for _, article := range res.Articles {
+		fmt.Println("\nTitle: ", article.Title)
+		fmt.Println("Author: ", article.Author)
 		fmt.Print("\n")
 	}
 	return nil
