@@ -31,7 +31,7 @@ func NewProtobufServiceClient(cc grpc.ClientConnInterface) ProtobufServiceClient
 
 func (c *protobufServiceClient) GetNewsArticles(ctx context.Context, in *GetNewsRequest, opts ...grpc.CallOption) (*NewsList, error) {
 	out := new(NewsList)
-	err := c.cc.Invoke(ctx, "/proto.ProtobufService/GetNewsArticles", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/worklen.proto.news.ProtobufService/GetNewsArticles", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -39,21 +39,19 @@ func (c *protobufServiceClient) GetNewsArticles(ctx context.Context, in *GetNews
 }
 
 // ProtobufServiceServer is the server API for ProtobufService service.
-// All implementations must embed UnimplementedProtobufServiceServer
+// All implementations should embed UnimplementedProtobufServiceServer
 // for forward compatibility
 type ProtobufServiceServer interface {
 	GetNewsArticles(context.Context, *GetNewsRequest) (*NewsList, error)
-	//mustEmbedUnimplementedProtobufServiceServer()
 }
 
-// UnimplementedProtobufServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedProtobufServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedProtobufServiceServer struct {
 }
 
 func (UnimplementedProtobufServiceServer) GetNewsArticles(context.Context, *GetNewsRequest) (*NewsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNewsArticles not implemented")
 }
-func (UnimplementedProtobufServiceServer) mustEmbedUnimplementedProtobufServiceServer() {}
 
 // UnsafeProtobufServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to ProtobufServiceServer will
@@ -76,7 +74,7 @@ func _ProtobufService_GetNewsArticles_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.ProtobufService/GetNewsArticles",
+		FullMethod: "/worklen.proto.news.ProtobufService/GetNewsArticles",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtobufServiceServer).GetNewsArticles(ctx, req.(*GetNewsRequest))
@@ -88,7 +86,7 @@ func _ProtobufService_GetNewsArticles_Handler(srv interface{}, ctx context.Conte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ProtobufService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.ProtobufService",
+	ServiceName: "worklen.proto.news.ProtobufService",
 	HandlerType: (*ProtobufServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -97,5 +95,5 @@ var ProtobufService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/news.proto",
+	Metadata: "news.proto",
 }

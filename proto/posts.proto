@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package worklen.proto.posts;
+option go_package = "proto/posts";
+
+// Define the User message
+message User {
+    string uid = 1;
+    string name = 2;
+    string avatar = 3;
+}
+
+// Define the Attachment message
+message Attachment {
+    string url = 1;
+    string ref = 2;
+    string name = 3;
+    string type = 4;
+    string blur_hash = 5;
+    string thumbnail = 6;
+    string local_upload_ref = 7;
+}
+
+// Define the Option message
+message Option {
+    string option_type = 1;
+    string metadata = 2;
+}
+
+// Define the Post message
+message Post {
+    int64 id = 1;
+    string user_uid = 2;
+    User user = 3;
+    string content = 4;
+    string template = 5;
+    string type = 6;
+    string created_on = 7;
+    string meta_data = 8;
+    repeated string tags = 9;
+    repeated string category = 10;
+    repeated User tagged_users = 11;
+    string thumbnail = 12;
+    string is_shared_id = 13;
+    repeated Attachment attachments = 14;
+    repeated Option options = 15;
+}
+
+message PostsList {
+    string status =1;
+    int64 totalResults = 2;
+    repeated Post articles = 3;
+}
+
+service ProtobufService {
+	rpc ListPosts(ListPostsRequest) returns (PostResponse); //list all the post based on input
+    rpc CreatePost (Post) returns (PostResponse) {}  // Creates a new post and return with valid id.
+    rpc GetPost (GetPostRequest) returns (PostResponse) {}  // Retrieves a specific post.
+    rpc UpdatePost (Post) returns (PostResponse) {}  // Updates a specific post and returns specific values.
+    rpc DeletePost (DeletePostRequest) returns (PostResponse) {}  // Deletes a specific post.
+}
+
+
+message ListPostsRequest {
+	int32 pageSize = 1;
+    int32 pageNo = 2;
+    string query = 3;
+    string uuid = 4;
+    string filter = 5;
+}
+
+message GetPostRequest {
+    string uuid = 1;
+}
+
+message DeletePostRequest {
+    string uuid = 1;
+}
+
+message PostResponse {
+    string status = 1;
+    string message = 2;
+    string type = 3;
+    repeated Post post = 4;
+}
+

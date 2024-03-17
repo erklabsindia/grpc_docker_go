@@ -38,6 +38,11 @@ type Config struct {
 	NewsBaseUrl     string `envconfig:"NEWS_BASE_URL" required:"true"`
 	NewsApiKey      string `envconfig:"NEWS_API_KEY" required:"true"`
 	NewsHttpTimeout int    `envconfig:"NEWS_HTTP_TIMEOUT" required:"true"`
+	SQL_DB          string `envconfig:"SQL_DB" required:"true"`
+	SQL_HOST        string `envconfig:"SQL_HOST" required:"true"`
+	SQL_PORT        int    `envconfig:"SQL_PORT" required:"true"`
+	SQL_USERNAME    string `envconfig:"SQL_USERNAME" required:"true"`
+	SQL_PASS        string `envconfig:"SQL_PASS" required:"true"`
 }
 
 // ReadEnv reads envionment variables into Config struct.

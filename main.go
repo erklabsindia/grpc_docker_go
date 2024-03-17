@@ -23,7 +23,6 @@ func run(log *log.Logger) error {
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 	serverErrors := make(chan error, 1)
-
 	server, err := server.NewServer(port)
 	if err != nil {
 		return errors.Wrap(err, "running server")

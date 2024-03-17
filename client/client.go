@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	news "worklen/proto"
+	post "worklen/proto/proto/posts"
 
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -29,15 +29,18 @@ func run(ctx context.Context, log *log.Logger) error {
 	if err != nil {
 		errors.Wrap(err, "dialing")
 	}
-	client := news.NewProtobufServiceClient(conn)
-	res, err := client.GetNewsArticles(ctx, &news.GetNewsRequest{Query: string("bitcoin"), PageSize: int32(2)})
+	client := post.NewProtobufServiceClient(conn)
+	res, err := client.ListPosts(ctx, &post.ListPostsRequest{PageNo: 1, PageSize: 10, Uuid: "sssss", Filter: "fff", Query: "fff"})
 	if err != nil {
-		return errors.Wrap(err, "calling 'client.GetNewsRequest()'")
+		return errors.Wrap(err, "calling 'client.ListPostsRequest()'")
 	}
-	for _, article := range res.Articles {
-		fmt.Println("\nTitle: ", article.Title)
-		fmt.Println("Author: ", article.Author)
-		fmt.Print("\n")
+	fmt.Println(res.Message)
+	fmt.Println(res.Status)
+	fmt.Println(res.Type)
+	for i, pst := range res.Post {
+		fmt.Println("Index", i)
+		fmt.Println("Centent: ", pst.Content)
+		fmt.Println("CreatedOn: ", pst.CreatedOn)
 	}
 	return nil
 }
