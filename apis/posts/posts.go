@@ -12,54 +12,87 @@ import (
 func ListPosts(ctx context.Context, db *pdb.PostgresDb, in *post.ListPostsRequest) (*post.PostResponse, error) {
 	var postList []*post.Post
 	// Your SQL query to fetch posts goes here
-	var query string = `SELECT 
-    p.id AS id,
-    p.user_uid AS user_uid,
-	json_object_agg('user',json_build_object(
-        'uid', u.uid,
-        'name', u.name,
-        'avatar', u.avatar
-    )) AS posted_by,
-    p.content AS content,
-    p.template AS template,
-    p.type AS type,
-    to_char(p.created_on,'HH12:MI:SS') AS created_on,
-    p.meta_data AS meta_data,
-    p.tags AS tags,
-    p.category AS category,
+	inQuery := "%" + in.Query + "%"
+	query := fmt.Sprintf(`SELECT
+    P.ID AS ID,
+    P.USER_UID AS USER_UID,
+    JSON_OBJECT_AGG(
+        'user',
+        JSON_BUILD_OBJECT('uid', U.UID, 'name', U.NAME, 'avatar', U.AVATAR)
+    ) AS POSTED_BY,
+    P.CONTENT AS CONTENT,
+    P.TEMPLATE AS TEMPLATE,
+    P.TYPE AS TYPE,
+    to_char(p.created_on,'HH12:MI:SS') AS CREATED_ON,
+    P.META_DATA AS META_DATA,
+    P.TAGS AS TAGS,
+    P.CATEGORY AS CATEGORY,
     (
-        SELECT json_agg(json_build_object(
-            'uid', tu.uid,
-            'name', tu.name,
-            'avatar', tu.avatar
-        )) FROM users tu WHERE tu.uid = ANY(p.tagged_users)
-    ) AS tagged_users,
-    p.thumbnail AS thumbnail,
-    COALESCE(cast(p.is_shared_id as varchar),'0') AS is_shared_id,
-    json_agg(json_build_object(
-        'url', a.url,
-        'ref', a.ref,
-        'name', a.name,
-        'type', a.type,
-        'blur_hash', a.blur_hash,
-        'thumbnail', a.thumbnail,
-        'local_upload_ref', a.local_upload_ref
-    )) AS attachments,
-    json_agg(json_build_object(
-        'option_type', po.option_type,
-        'metadata', po.metadata
-    )) AS options
-FROM 
-    posts p
-JOIN 
-    users u ON p.user_uid = u.uid
-LEFT JOIN 
-    attachments a ON p.id = a.post_id
-LEFT JOIN 
-    post_options po ON p.id = po.post_id
-GROUP BY 
-    p.id, u.name, u.avatar;`
-
+        SELECT
+            JSON_AGG(
+                JSON_BUILD_OBJECT(
+                    'uid',
+                    TU.UID,
+                    'name',
+                    TU.NAME,
+                    'avatar',
+                    TU.AVATAR
+                )
+            )
+        FROM
+            USERS TU
+        WHERE
+            TU.UID = ANY (P.TAGGED_USERS)
+    ) AS TAGGED_USERS,
+    P.THUMBNAIL AS THUMBNAIL,
+    COALESCE(cast(p.is_shared_id as varchar),'0') AS IS_SHARED_ID,
+    JSON_AGG(
+        JSON_BUILD_OBJECT(
+            'url',
+            A.URL,
+            'ref',
+            A.REF,
+            'name',
+            A.NAME,
+            'type',
+            A.TYPE,
+            'blur_hash',
+            A.BLUR_HASH,
+            'thumbnail',
+            A.THUMBNAIL,
+            'local_upload_ref',
+            A.LOCAL_UPLOAD_REF
+        )
+    ) AS ATTACHMENTS,
+    JSON_AGG(
+        JSON_BUILD_OBJECT(
+            'option_id',
+            PO.OPTION_ID,
+            'option_type',
+            PO.OPTION_TYPE,
+            'metadata',
+            PO.METADATA,
+            'content',
+            PO.CONTENT,
+			'total_likes',
+			(SELECT COUNT(POR.USER_ID) FROM POST_OPTION_RESPONSES AS POR WHERE POR.OPTION_ID=PO.OPTION_ID)
+        )
+    ) AS OPTIONS
+FROM
+    POSTS P
+JOIN USERS U ON P.USER_UID = U.UID
+LEFT JOIN ATTACHMENTS A ON P.ID = A.POST_ID
+LEFT JOIN POST_OPTIONS PO ON P.ID = PO.POST_ID
+WHERE
+    P.CONTENT LIKE '%s'
+GROUP BY
+    P.ID,
+    U.NAME,
+    U.AVATAR
+ORDER BY
+    P.CREATED_ON DESC
+LIMIT %d
+OFFSET %d;`, inQuery, in.PageSize, in.PageNo)
 	rows, err := db.Query(ctx, query)
 	if err != nil {
 		return &post.PostResponse{

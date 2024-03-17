@@ -30,7 +30,7 @@ func run(ctx context.Context, log *log.Logger) error {
 		errors.Wrap(err, "dialing")
 	}
 	client := post.NewProtobufServiceClient(conn)
-	res, err := client.ListPosts(ctx, &post.ListPostsRequest{PageNo: 1, PageSize: 10, Uuid: "sssss", Filter: "fff", Query: "fff"})
+	res, err := client.ListPosts(ctx, &post.ListPostsRequest{PageNo: 1, PageSize: 10, Uuid: "", Filter: "", Query: ""})
 	if err != nil {
 		return errors.Wrap(err, "calling 'client.ListPostsRequest()'")
 	}

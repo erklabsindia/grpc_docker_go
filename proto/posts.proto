@@ -27,8 +27,10 @@ message Attachment {
 
 // Define the Option message
 message Option {
-    string option_type = 1;
-    string metadata = 2;
+    int64 option_id = 1;
+    string option_type = 2;
+    string content = 3;
+    int64 total_likes = 4;
 }
 
 // Define the Post message
