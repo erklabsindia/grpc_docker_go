@@ -19,7 +19,7 @@ func ListPosts(ctx context.Context, db *pdb.PostgresDb, in *post.ListPostsReques
         'uid', u.uid,
         'name', u.name,
         'avatar', u.avatar
-    )) AS user,
+    )) AS posted_by,
     p.content AS content,
     p.template AS template,
     p.type AS type,
