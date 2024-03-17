@@ -10,6 +10,10 @@ message User {
     string avatar = 3;
 }
 
+message PostedBy {
+    User user = 1;
+}
+
 // Define the Attachment message
 message Attachment {
     string url = 1;
@@ -31,7 +35,7 @@ message Option {
 message Post {
     int64 id = 1;
     string user_uid = 2;
-    User user = 3;
+    PostedBy user = 3;
     string content = 4;
     string template = 5;
     string type = 6;
