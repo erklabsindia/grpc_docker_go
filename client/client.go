@@ -30,17 +30,21 @@ func run(ctx context.Context, log *log.Logger) error {
 		errors.Wrap(err, "dialing")
 	}
 	client := post.NewProtobufServiceClient(conn)
-	res, err := client.ListPosts(ctx, &post.ListPostsRequest{PageNo: 1, PageSize: 10, Uuid: "", Filter: "", Query: ""})
+	res, err := client.ListPosts(ctx, &post.ListPostsRequest{PageNo: 0, PageSize: 10, Uuid: "", Filter: "", Query: ""})
 	if err != nil {
 		return errors.Wrap(err, "calling 'client.ListPostsRequest()'")
 	}
 	fmt.Println(res.Message)
 	fmt.Println(res.Status)
 	fmt.Println(res.Type)
-	for i, pst := range res.Post {
-		fmt.Println("Index", i)
-		fmt.Println("Centent: ", pst.Content)
-		fmt.Println("CreatedOn: ", pst.CreatedOn)
+	for _, pst := range res.Post {
+		fmt.Println("----------------------------")
+		fmt.Println("User: ", pst.PostedBy.Name)
+		fmt.Println("Post: ", pst.Content)
+		for _, op := range pst.Options {
+			fmt.Println("OptionId: ", op.OptionId)
+			fmt.Println("TotalLikes: ", op.TotalLikes)
+		}
 	}
 	return nil
 }
