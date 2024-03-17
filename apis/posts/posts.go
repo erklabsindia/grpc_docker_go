@@ -76,7 +76,7 @@ GROUP BY
 		err := rows.Scan(
 			&p.Id,
 			&p.UserUid,
-			&p.User,
+			&p.PostedBy,
 			&p.Content,
 			&p.Template,
 			&p.Type,

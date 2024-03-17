@@ -35,7 +35,7 @@ message Option {
 message Post {
     int64 id = 1;
     string user_uid = 2;
-    PostedBy user = 3;
+    PostedBy posted_by = 3;
     string content = 4;
     string template = 5;
     string type = 6;
