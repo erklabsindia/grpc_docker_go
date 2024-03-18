@@ -57,20 +57,20 @@ func NewServer(port int) (Server, error) {
 	server := new(server)
 	listener, err := netListen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
-		return server, errors.Wrap(err, "tcp listening")
+		return server, errors.Wrap(err, "Error: Tcp Listening")
 	}
 	ctx := context.TODO()
 	server.listener = listener
 	config, err := configreaderReadEnv()
 	if err != nil {
-		return server, errors.Wrap(err, "reading env vars")
+		return server, errors.Wrap(err, "Error: reading env vars")
 	}
 
 	server.grpcServer = grpc.NewServer()
 	server.newsApi = news_api.NewNewsAPI(config.NewsBaseUrl, config.NewsApiKey, config.NewsHttpTimeout)
 	pdb, err := apis.Connect(ctx, config.SQL_HOST, config.SQL_USERNAME, config.SQL_PASS, "work_test", config.SQL_PORT)
 	if err != nil {
-		return server, errors.Wrap(err, "Error connect database")
+		return server, errors.Wrap(err, "Error: connect database")
 	}
 	server.db = pdb
 	news.RegisterProtobufServiceServer(server.grpcServer, server)

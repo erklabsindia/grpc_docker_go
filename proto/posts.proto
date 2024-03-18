@@ -46,6 +46,18 @@ message Post {
     string is_shared_id = 13;
     repeated Attachment attachments = 14;
     repeated Option options = 15;
+    repeated Comment comments = 16;
+    int64 total_comments = 17;
+}
+
+message Comment {
+    int64 id =1;
+    string content = 2;
+    Attachment attachment =3;
+    User user = 4;
+    string created_on = 5;
+    string type = 6;
+    int64 parent_id = 7;
 }
 
 message PostsList {
