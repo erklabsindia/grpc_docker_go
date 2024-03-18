@@ -68,7 +68,7 @@ func NewServer(port int) (Server, error) {
 
 	server.grpcServer = grpc.NewServer()
 	server.newsApi = news_api.NewNewsAPI(config.NewsBaseUrl, config.NewsApiKey, config.NewsHttpTimeout)
-	pdb, err := apis.Connect(ctx, config.SQL_HOST, config.SQL_USERNAME, config.SQL_PASS, "work_test", config.SQL_PORT)
+	pdb, err := apis.Connect(ctx, config.SQL_HOST, config.SQL_USERNAME, config.SQL_PASS, config.SQL_DB, config.SQL_PORT)
 	if err != nil {
 		return server, errors.Wrap(err, "Error: connect database")
 	}
