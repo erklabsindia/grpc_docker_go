@@ -1,7 +1,3 @@
-// Copyright (c) 2022 Tiago Melo. All rights reserved.
-// Use of this source code is governed by the MIT License that can be found in
-// the LICENSE file.
-
 package main
 
 import (
@@ -10,26 +6,25 @@ import (
 	"os/signal"
 	"syscall"
 
-	"worklen/server"
+	"grpc.worklen.com/server"
 
 	"github.com/pkg/errors"
 )
 
-func run(log *log.Logger) error {
-	port := 4040
+func runServer(log *log.Logger) error {
 	log.Println("main: Initializing GRPC server")
 	defer log.Println("main: Completed")
 
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 	serverErrors := make(chan error, 1)
-	server, err := server.NewServer(port)
+	server, err := server.StartServer()
 	if err != nil {
 		return errors.Wrap(err, "running server")
 	}
 
 	go func() {
-		log.Printf("main: GRPC server listening on port %d", port)
+		log.Printf("main: GRPC server listening")
 		serverErrors <- server.Serve()
 	}()
 
@@ -47,8 +42,8 @@ func run(log *log.Logger) error {
 
 func main() {
 	log := log.New(os.Stdout, "GRPC SERVER : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
-	if err := run(log); err != nil {
-		log.Println("main: error:", err)
+	if err := runServer(log); err != nil {
+		log.Println(err)
 		os.Exit(1)
 	}
 }

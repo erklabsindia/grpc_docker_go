@@ -46,13 +46,13 @@ type HttpClient interface {
 	Get(url string) (resp *http.Response, err error)
 }
 
-type newsAPI struct {
+type NewsApiClient struct {
 	baseUrl    string
 	apiKey     string
 	httpClient HttpClient
 }
 
-func (p *newsAPI) GetNews(query string, pageSize int) (NewsesResponse, error) {
+func (p *NewsApiClient) GetNews(query string, pageSize int) (NewsesResponse, error) {
 	var newsResponse NewsesResponse
 	//newsResponse := make([]NewsResponse, 0)
 	endpoint := fmt.Sprintf("%s?apiKey=%s&pageSize=%d&q=%s", p.baseUrl, p.apiKey, pageSize, query)
@@ -76,11 +76,11 @@ func (p *newsAPI) GetNews(query string, pageSize int) (NewsesResponse, error) {
 	return newsResponse, nil
 }
 
-func NewNewsAPI(baseUrl string, apiKey string, timeoutInSeconds int) NewsAPI {
+func GetNewsApiClient(baseUrl string, apiKey string, timeoutInSeconds int) NewsAPI {
 	httpClient := &http.Client{
 		Timeout: time.Duration(timeoutInSeconds) * time.Second,
 	}
-	return &newsAPI{
+	return &NewsApiClient{
 		baseUrl:    baseUrl,
 		apiKey:     apiKey,
 		httpClient: httpClient,

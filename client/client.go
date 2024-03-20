@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	post "worklen/proto/proto/posts"
+
+	post "grpc.worklen.com/proto/generated"
 
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -29,8 +30,8 @@ func run(ctx context.Context, log *log.Logger) error {
 	if err != nil {
 		errors.Wrap(err, "dialing")
 	}
-	client := post.NewProtobufServiceClient(conn)
-	res, err := client.ListPosts(ctx, &post.ListPostsRequest{PageNo: 0, PageSize: 10, Uuid: "", Filter: "", Query: ""})
+	client := post.NewPostProtobufServiceClient(conn)
+	res, err := client.ListPost(ctx, &post.ListPostsRequest{PageNo: 0, PageSize: 10, Uuid: "", Filter: "", Query: ""})
 	if err != nil {
 		return errors.Wrap(err, "calling 'client.ListPostsRequest()'")
 	}

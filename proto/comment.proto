@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+import "users.proto";
+import "attachments.proto";
+
+package worklen.proto;
+option go_package = "proto/generated";
+
+message Comment {
+    int64 id =1;
+    string content = 2;
+    Attachment attachment =3;
+    User user = 4;
+    string created_on = 5;
+    string type = 6;
+    int64 parent_id = 7;
+}
+
+service CommentProtobufService {
+    ///Attachments
+    rpc ListComment(CommentRequest) returns (CommentResponse) {} // List all the post based on input
+    rpc CreateComment (Comment) returns (CommentResponse) {}  // Creates a new post and return with valid id.
+    rpc GetComment (CommentRequest) returns (CommentResponse) {}  // Retrieves a specific post.
+    rpc UpdateComment (Comment) returns (CommentResponse) {}  // Updates a specific post and returns specific values.
+    rpc DeleteComment (CommentRequest) returns (CommentResponse) {}  // Deletes a specific post.
+}
+
+//AttachMents
+message CommentRequest {
+    string post_id = 2;
+    string uuid = 3;
+}
+message CommentResponse {
+    string status = 1;
+    string message = 2;
+    string type = 3;
+    repeated Comment comments = 4;
+}
+

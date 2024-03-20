@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package worklen.proto.news;
-option go_package = "proto/news";
+package worklen.proto;
+option go_package = "proto/generated";
 
 message Source {
   string id = 1;

@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package worklen.proto;
+option go_package = "proto/generated";
+
+// Define the User message
+message User {
+    string uid = 1;
+    string name = 2;
+    string avatar = 3;
+}
+
+// message UserData {
+//     string uid = 1;
+//     string name = 2;
+//     string avatar = 3; 
+// }
+
+service UsersProtobufService {
+	rpc ListUser(ListUsersRequest) returns (UserResponse) {} //list all the user based on input
+    rpc CreateUser (User) returns (UserResponse) {}  // Creates a new user and return with valid id.
+    rpc GetUser (GetUserRequest) returns (UserResponse) {}  // Retrieves a specific user.
+    rpc UpdateUser (User) returns (UserResponse) {}  // Updates a specific user and returns specific values.
+    rpc DeleteUser (DeleteUserRequest) returns (UserResponse) {}  // Deletes a specific user.
+}
+
+message ListUsersRequest {
+	int32 pageSize = 1;
+    int32 pageNo = 2;
+    string query = 3;
+    string uuid = 4;
+    string filter = 5;
+}
+
+message GetUserRequest {
+    string uuid = 1;
+}
+
+message DeleteUserRequest {
+    string uuid = 1;
+}
+
+message UserResponse {
+    string status = 1;
+    string message = 2;
+    string type = 3;
+    repeated User users = 4;
+}

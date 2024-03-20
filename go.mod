@@ -1,4 +1,4 @@
-module worklen
+module grpc.worklen.com
 
 go 1.16
 
@@ -9,7 +9,6 @@ require (
 )
 
 require (
-	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/joho/godotenv v1.4.0
 	github.com/kelseyhightower/envconfig v1.4.0

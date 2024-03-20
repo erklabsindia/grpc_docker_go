@@ -1,0 +1,40 @@
+syntax = "proto3";
+package worklen.proto;
+
+option go_package = "proto/generated";
+
+
+// Define the Attachment message
+message Attachment {
+    string url = 1;
+    string ref = 2;
+    string name = 3;
+    string type = 4;
+    string blur_hash = 5;
+    string thumbnail = 6;
+    string local_upload_ref = 7;
+    int64 id = 8;
+}
+
+service AttachmentProtobufService {
+    ///Attachments
+    rpc ListAttachment(AttachmentRequest) returns (AttachmentResponse) {}
+    rpc CreateAttachment (Attachment) returns (AttachmentResponse) {}
+    rpc GetAttachment (AttachmentRequest) returns (AttachmentResponse) {}
+    rpc UpdateAttachment (Attachment) returns (AttachmentResponse) {}
+    rpc DeleteAttachment (AttachmentRequest) returns (AttachmentResponse) {}
+}
+
+//AttachMents
+message AttachmentRequest {
+    string attachment_id = 1;
+    string post_id = 2;
+    string uuid = 3;
+}
+message AttachmentResponse {
+    string status = 1;
+    string message = 2;
+    string type = 3;
+    repeated Attachment attachments = 4;
+}
+

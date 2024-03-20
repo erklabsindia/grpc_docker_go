@@ -2,7 +2,7 @@
 // Use of this source code is governed by the MIT License that can be found in
 // the LICENSE file.
 
-package configreader
+package config_reader
 
 import (
 	"github.com/joho/godotenv"
@@ -38,6 +38,7 @@ type Config struct {
 	NewsBaseUrl     string `envconfig:"NEWS_BASE_URL" required:"true"`
 	NewsApiKey      string `envconfig:"NEWS_API_KEY" required:"true"`
 	NewsHttpTimeout int    `envconfig:"NEWS_HTTP_TIMEOUT" required:"true"`
+	GRPC_PORT       int    `envconfig:"SQL_PORT" required:"true"`
 	SQL_DB          string `envconfig:"SQL_DB" required:"true"`
 	SQL_HOST        string `envconfig:"SQL_HOST" required:"true"`
 	SQL_PORT        int    `envconfig:"SQL_PORT" required:"true"`
@@ -47,7 +48,7 @@ type Config struct {
 
 // ReadEnv reads envionment variables into Config struct.
 func ReadEnv() (*Config, error) {
-	err := godotenvLoad("configreader/config.env")
+	err := godotenvLoad("config/config.env")
 	if err != nil {
 		return nil, errors.Wrap(err, "reading .env file")
 	}
