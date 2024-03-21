@@ -30,7 +30,7 @@ func StartServer() (Server, error) {
 		return server, errors.Wrap(err, "Error: reading env vars")
 	}
 
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", config.GRPC_PORT))
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", 4040))
 	if err != nil {
 		return server, errors.Wrap(err, "Error: Tcp Listening")
 	}
